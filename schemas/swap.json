@@ -1,0 +1,24 @@
+{
+    "title": "Token Swap Transaction",
+    "type": "object",
+    "properties": {
+      "fromAsset": {
+        "type": "string",
+        "enum": ["$WETH", "$USDC", "$DAI"]
+      },
+      "toAsset": {
+        "type": "string",
+        "enum": ["$WETH", "$USDC", "$DAI"]
+      },
+      "amount": {
+        "type": "number"
+      },
+      "chain": {
+        "type": "string",
+        "enum": ["sepolia", "mainnet", "base"],
+        "description": "The blockchain network where the transfer will occur."
+      }
+    },
+    "required": ["fromAsset", "toAsset", "amount", "chain"]
+  }
+  

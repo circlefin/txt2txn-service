@@ -1,0 +1,25 @@
+{
+    "title": "Simple Token Transfer",
+    "type": "object",
+    "properties": {
+      "token": {
+        "type": "string",
+        "enum": ["$WETH", "$USDC", "$DAI"]
+      },
+      "amount": {
+        "type": "number",
+        "description": "The amount of tokens to transfer."
+      },
+      "chain": {
+        "type": "string",
+        "enum": ["sepolia", "mainnet", "base"],
+        "description": "The blockchain network where the transfer will occur."
+      },
+      "recipientAddress": {
+        "type": "string",
+        "description": "The blockchain address of the recipient."
+      }
+    },
+    "required": ["token", "amount", "chain", "recipientAddress"]
+  }
+  

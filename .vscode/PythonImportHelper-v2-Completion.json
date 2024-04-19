@@ -1,0 +1,305 @@
+[
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "OpenAI",
+        "importPath": "openai",
+        "description": "openai",
+        "isExtraImport": true,
+        "detail": "openai",
+        "documentation": {}
+    },
+    {
+        "label": "OpenAI",
+        "importPath": "openai",
+        "description": "openai",
+        "isExtraImport": true,
+        "detail": "openai",
+        "documentation": {}
+    },
+    {
+        "label": "OpenAI",
+        "importPath": "openai",
+        "description": "openai",
+        "isExtraImport": true,
+        "detail": "openai",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "relativedelta",
+        "importPath": "dateutil.relativedelta",
+        "description": "dateutil.relativedelta",
+        "isExtraImport": true,
+        "detail": "dateutil.relativedelta",
+        "documentation": {}
+    },
+    {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "CORSMiddleware",
+        "importPath": "fastapi.middleware.cors",
+        "description": "fastapi.middleware.cors",
+        "isExtraImport": true,
+        "detail": "fastapi.middleware.cors",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "swap",
+        "importPath": "llm",
+        "description": "llm",
+        "isExtraImport": true,
+        "detail": "llm",
+        "documentation": {}
+    },
+    {
+        "label": "handler",
+        "importPath": "llm",
+        "description": "llm",
+        "isExtraImport": true,
+        "detail": "llm",
+        "documentation": {}
+    },
+    {
+        "label": "transfer",
+        "importPath": "llm",
+        "description": "llm",
+        "isExtraImport": true,
+        "detail": "llm",
+        "documentation": {}
+    },
+    {
+        "label": "load_schema",
+        "kind": 2,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "def load_schema(schema_path):\n    with open(schema_path, \"r\") as file:\n        return json.load(file)\nswap_schema = load_schema(\"schemas/swap.json\")\nlimit_order_schema = load_schema(\"schemas/limit_swap.json\")\ntransfer_schema = load_schema(\"schemas/transfer.json\")\n# Initialize OpenAI client\nclient = OpenAI()\nclient.api_key = os.getenv(\"OPENAI_API_KEY\")\ndef classify_transaction(transaction_text):",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "classify_transaction",
+        "kind": 2,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "def classify_transaction(transaction_text):\n    # System message explaining the task\n    system_message = {\n        \"role\": \"system\",\n        \"content\": \"Determine if the following transaction text is for a token swap, a transfer, or a limit order. Use the appropriate schema to understand the transaction. Return '1' for transfer, '2' for swap, and '0' for neither. Do not output anything besides this number. If one number is classified for the output, make sure to omit the other two in your generated response.\"\n    }\n    # Messages to set up schema contexts\n    swap_schema_message = {\n        \"role\": \"system\",\n        \"content\": \"[Swap Schema] Token Swap Schema:\\n\" + json.dumps(swap_schema, indent=2)",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "get_valid_response",
+        "kind": 2,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "def get_valid_response(response):\n    valid_responses = [\"0\", \"1\", \"2\"]\n    found = None\n    for valid in valid_responses:\n        # Count the occurrences of each valid response in the string\n        if response.count(valid) == 1:\n            if found is not None:\n                # If another valid response was already found, return 0\n                return 0\n            found = int(valid)  # Store the found valid response",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "swap_schema",
+        "kind": 5,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "swap_schema = load_schema(\"schemas/swap.json\")\nlimit_order_schema = load_schema(\"schemas/limit_swap.json\")\ntransfer_schema = load_schema(\"schemas/transfer.json\")\n# Initialize OpenAI client\nclient = OpenAI()\nclient.api_key = os.getenv(\"OPENAI_API_KEY\")\ndef classify_transaction(transaction_text):\n    # System message explaining the task\n    system_message = {\n        \"role\": \"system\",",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "limit_order_schema",
+        "kind": 5,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "limit_order_schema = load_schema(\"schemas/limit_swap.json\")\ntransfer_schema = load_schema(\"schemas/transfer.json\")\n# Initialize OpenAI client\nclient = OpenAI()\nclient.api_key = os.getenv(\"OPENAI_API_KEY\")\ndef classify_transaction(transaction_text):\n    # System message explaining the task\n    system_message = {\n        \"role\": \"system\",\n        \"content\": \"Determine if the following transaction text is for a token swap, a transfer, or a limit order. Use the appropriate schema to understand the transaction. Return '1' for transfer, '2' for swap, and '0' for neither. Do not output anything besides this number. If one number is classified for the output, make sure to omit the other two in your generated response.\"",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "transfer_schema",
+        "kind": 5,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "transfer_schema = load_schema(\"schemas/transfer.json\")\n# Initialize OpenAI client\nclient = OpenAI()\nclient.api_key = os.getenv(\"OPENAI_API_KEY\")\ndef classify_transaction(transaction_text):\n    # System message explaining the task\n    system_message = {\n        \"role\": \"system\",\n        \"content\": \"Determine if the following transaction text is for a token swap, a transfer, or a limit order. Use the appropriate schema to understand the transaction. Return '1' for transfer, '2' for swap, and '0' for neither. Do not output anything besides this number. If one number is classified for the output, make sure to omit the other two in your generated response.\"\n    }",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "client = OpenAI()\nclient.api_key = os.getenv(\"OPENAI_API_KEY\")\ndef classify_transaction(transaction_text):\n    # System message explaining the task\n    system_message = {\n        \"role\": \"system\",\n        \"content\": \"Determine if the following transaction text is for a token swap, a transfer, or a limit order. Use the appropriate schema to understand the transaction. Return '1' for transfer, '2' for swap, and '0' for neither. Do not output anything besides this number. If one number is classified for the output, make sure to omit the other two in your generated response.\"\n    }\n    # Messages to set up schema contexts\n    swap_schema_message = {",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "client.api_key",
+        "kind": 5,
+        "importPath": "llm.handler",
+        "description": "llm.handler",
+        "peekOfCode": "client.api_key = os.getenv(\"OPENAI_API_KEY\")\ndef classify_transaction(transaction_text):\n    # System message explaining the task\n    system_message = {\n        \"role\": \"system\",\n        \"content\": \"Determine if the following transaction text is for a token swap, a transfer, or a limit order. Use the appropriate schema to understand the transaction. Return '1' for transfer, '2' for swap, and '0' for neither. Do not output anything besides this number. If one number is classified for the output, make sure to omit the other two in your generated response.\"\n    }\n    # Messages to set up schema contexts\n    swap_schema_message = {\n        \"role\": \"system\",",
+        "detail": "llm.handler",
+        "documentation": {}
+    },
+    {
+        "label": "convert_transaction",
+        "kind": 2,
+        "importPath": "llm.swap",
+        "description": "llm.swap",
+        "peekOfCode": "def convert_transaction(transaction_text, recipientAddress):\n    # Tutorial: https://platform.openai.com/docs/quickstart?context=python\n    #If not added to OS\n    # client = OpenAI(api_key=\"PASTE-KEY-HERE\")\n    #If added to OS\n    client = OpenAI()\n    client.api_key = os.getenv(\"OPENAI_API_KEY\")\n    # System message explaining the task and giving hints for each schema\n    system_message = {\n        \"role\": \"system\",",
+        "detail": "llm.swap",
+        "documentation": {}
+    },
+    {
+        "label": "swap_schema_path",
+        "kind": 5,
+        "importPath": "llm.swap",
+        "description": "llm.swap",
+        "peekOfCode": "swap_schema_path = \"schemas/swap.json\"\nlimit_order_schema_path = \"schemas/limit_swap.json\"\n# Load the JSON schemas\nwith open(swap_schema_path, \"r\") as file:\n    swap_schema = json.load(file)\nwith open(limit_order_schema_path, \"r\") as file:\n    limit_order_schema = json.load(file)\ntokens = {\n    \"$ETH\": \"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\n    \"$DAI\": \"0x6B175474E89094C44Da98b954EedeAC495271d0F\",",
+        "detail": "llm.swap",
+        "documentation": {}
+    },
+    {
+        "label": "limit_order_schema_path",
+        "kind": 5,
+        "importPath": "llm.swap",
+        "description": "llm.swap",
+        "peekOfCode": "limit_order_schema_path = \"schemas/limit_swap.json\"\n# Load the JSON schemas\nwith open(swap_schema_path, \"r\") as file:\n    swap_schema = json.load(file)\nwith open(limit_order_schema_path, \"r\") as file:\n    limit_order_schema = json.load(file)\ntokens = {\n    \"$ETH\": \"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\n    \"$DAI\": \"0x6B175474E89094C44Da98b954EedeAC495271d0F\",\n    \"$USDC\": \"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",",
+        "detail": "llm.swap",
+        "documentation": {}
+    },
+    {
+        "label": "tokens",
+        "kind": 5,
+        "importPath": "llm.swap",
+        "description": "llm.swap",
+        "peekOfCode": "tokens = {\n    \"$ETH\": \"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\n    \"$DAI\": \"0x6B175474E89094C44Da98b954EedeAC495271d0F\",\n    \"$USDC\": \"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n}\n# Function to convert transaction text to JSON using appropriate schema\ndef convert_transaction(transaction_text, recipientAddress):\n    # Tutorial: https://platform.openai.com/docs/quickstart?context=python\n    #If not added to OS\n    # client = OpenAI(api_key=\"PASTE-KEY-HERE\")",
+        "detail": "llm.swap",
+        "documentation": {}
+    },
+    {
+        "label": "load_schema",
+        "kind": 2,
+        "importPath": "llm.transfer",
+        "description": "llm.transfer",
+        "peekOfCode": "def load_schema(schema_path):\n    \"\"\" Load a JSON schema from a file. \"\"\"\n    with open(schema_path, \"r\") as file:\n        return json.load(file)\n# Load the transfer schema\ntransfer_schema = load_schema(\"schemas/transfer.json\")\n# Initialize the OpenAI client\nclient = OpenAI(api_key=os.getenv(\"OPENAI_API_KEY\"))\ntoken_contracts = {\n    \"base\": {",
+        "detail": "llm.transfer",
+        "documentation": {}
+    },
+    {
+        "label": "convert_transfer_intent",
+        "kind": 2,
+        "importPath": "llm.transfer",
+        "description": "llm.transfer",
+        "peekOfCode": "def convert_transfer_intent(transaction_text):\n    \"\"\" Convert a user-provided sentence describing a token transfer into a JSON object based on the transfer schema. \"\"\"\n    # System message to set up the context for the AI\n    system_message = {\n        \"role\": \"system\",\n        \"content\": \"Please analyze the following transaction text and fill out the JSON schema based on the provided details. All prices are assumed to be in USD.\"\n    }\n    # Schema context message\n    transfer_schema_message = {\n        \"role\": \"system\",",
+        "detail": "llm.transfer",
+        "documentation": {}
+    },
+    {
+        "label": "transfer_schema",
+        "kind": 5,
+        "importPath": "llm.transfer",
+        "description": "llm.transfer",
+        "peekOfCode": "transfer_schema = load_schema(\"schemas/transfer.json\")\n# Initialize the OpenAI client\nclient = OpenAI(api_key=os.getenv(\"OPENAI_API_KEY\"))\ntoken_contracts = {\n    \"base\": {\n        \"$WETH\": \"0x4200000000000000000000000000000000000006\",\n        \"$USDC\": \"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\n        \"$DAI\": \"0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb\"\n    },\n    \"mainnet\": {",
+        "detail": "llm.transfer",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "llm.transfer",
+        "description": "llm.transfer",
+        "peekOfCode": "client = OpenAI(api_key=os.getenv(\"OPENAI_API_KEY\"))\ntoken_contracts = {\n    \"base\": {\n        \"$WETH\": \"0x4200000000000000000000000000000000000006\",\n        \"$USDC\": \"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\n        \"$DAI\": \"0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb\"\n    },\n    \"mainnet\": {\n        \"$WETH\": \"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\n        \"$USDC\": \"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",",
+        "detail": "llm.transfer",
+        "documentation": {}
+    },
+    {
+        "label": "token_contracts",
+        "kind": 5,
+        "importPath": "llm.transfer",
+        "description": "llm.transfer",
+        "peekOfCode": "token_contracts = {\n    \"base\": {\n        \"$WETH\": \"0x4200000000000000000000000000000000000006\",\n        \"$USDC\": \"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\n        \"$DAI\": \"0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb\"\n    },\n    \"mainnet\": {\n        \"$WETH\": \"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\n        \"$USDC\": \"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"$DAI\": \"0x6B175474E89094C44Da98b954EedeAC495271d0F\"",
+        "detail": "llm.transfer",
+        "documentation": {}
+    },
+    {
+        "label": "UserQuery",
+        "kind": 6,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "class UserQuery(BaseModel):\n    question: str\n# client = openAI(api_key=my_api_key)\n@app.post(\"/answer/\")\nasync def get_answer(query: UserQuery):\n    try:\n        classification = handler.classify_transaction(query.question)\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))\n    # Unable to classify",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "my_api_key",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "my_api_key = ''\napp = FastAPI()\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],  # Allows all origins\n    allow_credentials=True,\n    allow_methods=[\"*\"],  # Allows all methods\n    allow_headers=[\"*\"],  # Allows all headers\n)\n#this is an example menu and in this case I am using berkeley's caffe strada for testing",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "app = FastAPI()\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],  # Allows all origins\n    allow_credentials=True,\n    allow_methods=[\"*\"],  # Allows all methods\n    allow_headers=[\"*\"],  # Allows all headers\n)\n#this is an example menu and in this case I am using berkeley's caffe strada for testing\norder = \"\"\"",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "order",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "order = \"\"\"\nPrompt\n\"\"\"\nclass UserQuery(BaseModel):\n    question: str\n# client = openAI(api_key=my_api_key)\n@app.post(\"/answer/\")\nasync def get_answer(query: UserQuery):\n    try:\n        classification = handler.classify_transaction(query.question)",
+        "detail": "main",
+        "documentation": {}
+    }
+]
