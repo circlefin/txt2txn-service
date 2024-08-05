@@ -31,7 +31,7 @@ client = create_open_ai_client()
 token_contracts = get_token_contracts("transfer")
 
 
-def convert_transfer_intent(transaction_text):
+def convert_transfer_intent(user_input):
     """ Convert a user-provided sentence describing a token transfer into a JSON object based on the transfer schema. """
 
     # System message to set up the context for the AI
@@ -49,13 +49,13 @@ def convert_transfer_intent(transaction_text):
     # User message with the transaction text
     user_message = {
         "role": "user",
-        "content": transaction_text
+        "content": user_input
     }
 
     # Additional instructions
-    intructions_schema_message = {
+    instructions_schema_message = {
         "role": "system",
-        "content": "The outputted JSON should be an instance of the schema. Never output the schema itself, but instead fill out its values. It is not necessary to include the parameters/contraints that are not directly related to the data provided. If no chain is specified to excecute the transaction on, defualt to 'mainnet'",
+        "content": "The outputted JSON should be an instance of the schema. Never output the schema itself, but instead fill out its values. It is not necessary to include the parameters/contraints that are not directly related to the data provided. If no chain is specified to excecute the transaction on, default to 'mainnet'",
     }
     try:
         # Send the prompt to ChatGPT
@@ -64,6 +64,7 @@ def convert_transfer_intent(transaction_text):
             messages=[
                 system_message,
                 transfer_schema_message,
+                instructions_schema_message,
                 user_message,
             ],
             response_format={"type": "json_object"}

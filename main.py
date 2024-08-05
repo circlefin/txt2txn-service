@@ -59,7 +59,7 @@ async def get_answer(query: UserQuery):
             query_type = "transfer"
         # Classify as a swap
         elif classification == 2:
-            response = swap.convert_transaction(query.question, "sample_addy")
+            response = swap.convert_transaction(query.question)
             query_type = "swap"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -70,7 +70,7 @@ async def get_answer(query: UserQuery):
 @app.post("/swap/")
 async def get_swap(query: UserQuery):
     try:
-        response = swap.convert_transaction(query.question, "sample_addy")
+        response = swap.convert_transaction(query.question)
         return {"transaction_type":"swap", response: response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

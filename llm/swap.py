@@ -30,7 +30,7 @@ swap_schema = load_schema("schemas/swap.json")
 token_contracts = get_token_contracts("swap")
 
 # Function to convert transaction text to JSON using appropriate schema
-def convert_transaction(transaction_text, recipientAddress):
+def convert_transaction(user_input):
 
     client = create_open_ai_client()
 
@@ -46,13 +46,13 @@ def convert_transaction(transaction_text, recipientAddress):
         "content": "Token Swap Schema:\n" + json.dumps(swap_schema, indent=2),
     }
 
-    intructions_schema_message = {
+    instructions_schema_message = {
         "role": "system",
         "content": "The outputted JSON should be an instance of the schema. It is not necessary to include the parameters/contraints that are not directly related to the data provided.",
     }
 
     # User message with the transaction text
-    user_message = {"role": "user", "content": transaction_text}
+    user_message = {"role": "user", "content": user_input}
 
     # Sending the prompt to ChatGPT
     completion = client.chat.completions.create(
@@ -61,7 +61,7 @@ def convert_transaction(transaction_text, recipientAddress):
         messages=[
             system_message,
             swap_schema_message,
-            intructions_schema_message,
+            instructions_schema_message,
             user_message,
         ],
     )
