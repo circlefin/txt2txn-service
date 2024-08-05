@@ -1,4 +1,4 @@
-name: CI
+name: Scan
 
 on:
   push:
@@ -7,28 +7,10 @@ on:
     branches: [master]
 
 jobs:
-  install:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
   scan:
-    needs: install
     if: github.event_name == 'pull_request'
     uses: circlefin/circle-public-github-workflows/.github/workflows/pr-scan.yaml@v1
 
   release-sbom:
-    needs: install
     if: github.event_name == 'push'
     uses: circlefin/circle-public-github-workflows/.github/workflows/attach-release-assets.yaml@v1
