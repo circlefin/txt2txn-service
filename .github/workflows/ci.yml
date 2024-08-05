@@ -51,6 +51,7 @@ jobs:
       uses: circlefin/circle-public-github-workflows/.github/workflows/pr-scan.yaml@v1
       
   release-sbom: 
+      needs: install
       if: github.event_name == 'push'
       uses: circlefin/circle-public-github-workflows/.github/workflows/attach-release-assets.yaml@v1
       
