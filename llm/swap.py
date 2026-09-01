@@ -22,7 +22,14 @@
 import json
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from .utils import create_open_ai_client, load_schema, get_token_contracts
+from .utils import (
+    ModelOutputError,
+    create_open_ai_client,
+    get_token_contracts,
+    load_schema,
+    require_fields,
+    resolve_token_address,
+)
 
 # load schema
 swap_schema = load_schema("schemas/swap.json")
@@ -70,12 +77,26 @@ def convert_transaction(user_input):
     filled_schema_text = completion.choices[0].message.content.strip()
     try:
         filled_schema = json.loads(filled_schema_text)
-    except json.JSONDecodeError:
-        print("Error in decoding JSON. Response may not be in correct format.")
-        filled_schema = {}
+    except json.JSONDecodeError as error:
+        # Previously this swallowed the error, substituted an empty dict, and then
+        # indexed into it, so a non-JSON response surfaced as an unrelated
+        # KeyError. Fail with a precise error the caller can map to a 502 instead.
+        raise ModelOutputError(
+            "Model response was not valid JSON and cannot be turned into a swap."
+        ) from error
 
-    print(filled_schema)
-    filled_schema["fromAsset"] = token_contracts[filled_schema["chain"]][filled_schema["fromAsset"]]
-    filled_schema["toAsset"] = token_contracts[filled_schema["chain"]][filled_schema["toAsset"]]
+    # Every field below is model-generated, i.e. derived from untrusted user text.
+    # Validate presence first, then resolve the token symbols through the
+    # allowlist so a hallucinated or injected chain/token cannot reach the
+    # signing path as an arbitrary value.
+    require_fields(filled_schema, ("chain", "fromAsset", "toAsset"))
+
+    chain = filled_schema["chain"]
+    filled_schema["fromAsset"] = resolve_token_address(
+        token_contracts, chain, filled_schema["fromAsset"], "fromAsset"
+    )
+    filled_schema["toAsset"] = resolve_token_address(
+        token_contracts, chain, filled_schema["toAsset"], "toAsset"
+    )
 
     return filled_schema

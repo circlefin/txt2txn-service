@@ -20,7 +20,14 @@
 # SPDX-License-Identifier: MIT
 
 import json
-from .utils import create_open_ai_client, load_schema, get_token_contracts
+from .utils import (
+    ModelOutputError,
+    create_open_ai_client,
+    get_token_contracts,
+    load_schema,
+    require_fields,
+    resolve_token_address,
+)
 
 # Load the transfer schema
 transfer_schema = load_schema("schemas/transfer.json")
@@ -57,29 +64,34 @@ def convert_transfer_intent(user_input):
         "role": "system",
         "content": "The outputted JSON should be an instance of the schema. Never output the schema itself, but instead fill out its values. It is not necessary to include the parameters/contraints that are not directly related to the data provided. If no chain is specified to excecute the transaction on, default to 'mainnet'",
     }
-    try:
-        # Send the prompt to ChatGPT
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                system_message,
-                transfer_schema_message,
-                instructions_schema_message,
-                user_message,
-            ],
-            response_format={"type": "json_object"}
-        )
-    except Exception as e:
-        print(e)
+    # A failed completion must abort the request. The previous version caught the
+    # exception, printed it, and then read `completion.choices` regardless, which
+    # raised UnboundLocalError and masked the real upstream failure.
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            system_message,
+            transfer_schema_message,
+            instructions_schema_message,
+            user_message,
+        ],
+        response_format={"type": "json_object"}
+    )
 
     # Extract and interpret the last message from the completion
     filled_schema_text = completion.choices[0].message.content.strip()
     try:
         filled_schema = json.loads(filled_schema_text)
-    except json.JSONDecodeError:
-        print("Error in decoding JSON. Response may not be in correct format.")
-        return {}
+    except json.JSONDecodeError as error:
+        raise ModelOutputError(
+            "Model response was not valid JSON and cannot be turned into a transfer."
+        ) from error
 
-    print(filled_schema)
-    filled_schema['token'] = token_contracts[filled_schema["chain"]][filled_schema["token"]]
+    # Model output is untrusted: validate the required fields and resolve the
+    # token through the allowlist rather than indexing the contract table with
+    # attacker-influenceable keys.
+    require_fields(filled_schema, ("chain", "token"))
+    filled_schema["token"] = resolve_token_address(
+        token_contracts, filled_schema["chain"], filled_schema["token"], "token"
+    )
     return filled_schema
